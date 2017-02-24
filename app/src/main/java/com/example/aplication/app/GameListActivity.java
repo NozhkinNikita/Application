@@ -9,8 +9,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.*;
-import java.lang.String;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,8 +80,9 @@ public class GameListActivity extends Activity implements DownloadCallback{
                             reader.beginObject();
 
                             //todo fix string build
+                            String s = "";
                             while (reader.hasNext()) {
-                                String s = "";
+
                                 switch (reader.nextName()) {
                                     case "name":
                                         s += reader.nextString();
@@ -89,9 +91,9 @@ public class GameListActivity extends Activity implements DownloadCallback{
                                         s += reader.nextString();
                                         break;
                                 }
-                                list.add(s);
-                            }
 
+                            }
+                            list.add(s);
                             reader.endObject();
                         }
 
@@ -111,5 +113,14 @@ public class GameListActivity extends Activity implements DownloadCallback{
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.my_item_layout, list.toArray(buf));
 
         view.setAdapter(adapter);
+    }
+
+    public void onItemClick(View view) {
+        int num = ((ListView)findViewById(R.id.listView)).getPositionForView(view);
+        ++num;
+        Intent intent = new Intent(this, gameActivityNum1.class);
+        intent.putExtra(gameActivityNum1.ARG_STR,"command=game&id="+Integer.toString(num)+"&version=0");
+        Log.d(TAG, "Start game with id: " + Integer.toString(num));
+        startActivity(intent);
     }
 }
